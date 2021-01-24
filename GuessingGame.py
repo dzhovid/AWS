@@ -15,3 +15,5 @@ while i < 6:
     if guess == secret_num:
         print("That's correct. You got it!")
         break
+
+print("Hello from Git session in Vs Code.")

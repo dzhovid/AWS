@@ -17,3 +17,5 @@ while i < 6:
         break
 
 print("Hello from Git session in Vs Code.")
+
+print("Hello from devOpsTest.")

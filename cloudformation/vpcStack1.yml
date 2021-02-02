@@ -234,4 +234,23 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateRouteTable2
       SubnetId: !Ref PrivateDBSubnet2
+
+Outputs: 
+  vpcID:
+    Description: sprintqa vpc id
+    Value: !Ref VPC
+    Export: 
+      Name: sprintqaVPC   
+
+  PublicSubnet1:
+    Description: Public Subnet 1 ID
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: PublicSubnet1 
+  
+  PrivateSubnet1:
+    Description: Private Subnet 1 ID
+    Value: !Ref PrivateSubnet1
+    Export:
+      Name: PrivateSubnet1
   

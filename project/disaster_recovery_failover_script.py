@@ -20,7 +20,7 @@ route53 = boto3.client("route53")
 
 # response = dynamo_client.describe_table(
 #     TableName='dr_failover'
-# )
+# ).
 # print(response)
 
 #Name='disaster-recovery.devopstechskills.com'

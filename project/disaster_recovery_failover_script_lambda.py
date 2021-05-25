@@ -4,34 +4,11 @@ import os
 import json
 import sys
 from time import sleep
-
 from botocore import endpoint
-
-session = boto3.Session(profile_name='development')
-east = 'us-east-1'
-west = 'us-west-2'
-dynamo_client = boto3.client('dynamodb',region_name=east)
-dynamo = boto3.resource("dynamodb",region_name=east)
+dynamo_client = boto3.client('dynamodb')
+dynamo = boto3.resource("dynamodb")
 route53 = boto3.client("route53")
 
-# failover_from =os.environ["Failover_from"]
-# failover_to =os.environ["Failover_to"]
-# Dynamo =os.environ["DynamoTableName"]
-
-# response = dynamo_client.describe_table(
-#     TableName='dr_failover'
-# ).
-# print(response)
-
-#Name='disaster-recovery.devopstechskills.com'
-#Record='disasterrecoverywest-env.eba-hjbt2b2v.us-west-2.elasticbeanstalk.com.'
-#weight=0
-Dynamo='dr_recovery'
-#SetID=str(3)
-#hostedzoneid='Z38NKT9BP95V3O' # west eb hosted zone id by aws in west
-#hostedzoneid='Z117KPS5GTRQ2G' # east eb hosted zone id by aws in ease
-failover_from = 'West'
-failover_to = 'East'
 
 def update_dynamo(Name, Record, Weight, Dynamo):
     try:
@@ -40,7 +17,6 @@ def update_dynamo(Name, Record, Weight, Dynamo):
     except Exception as error:
         print(error)
 
-#update_dynamo(Name, Record, weight, Dynamo)
 
 
 def update_route53_aliastarget(Name,SetID,weight,hostedzoneid,Record,TTL):
@@ -72,10 +48,13 @@ def update_route53_aliastarget(Name,SetID,weight,hostedzoneid,Record,TTL):
 
 #update_route53_aliastarget(Name,SetID,weight,Record,hostedzoneid)
 
-def main():
+def lambda_handler(event, context):
+    failover_from =os.environ["Failover_from"]
+    failover_to =os.environ["Failover_to"]
+    Dynamo =os.environ["DynamoTableName"]
     table = dynamo.Table(Dynamo) #line 26 var name
     scan_response = table.scan(AttributesToGet=["Records","Name","Weight","Type","SetIdentifier","TTL"])
-    #print(scan_response)
+
     for i in scan_response["Items"]:
         Weight = i["Weight"] # Weight from the table
         Type = i["Type"]
@@ -83,12 +62,7 @@ def main():
         TTL = int(i["TTL"])
         Record = i["Records"]
         Name = i["Name"]
-        # print(type(Weight))
-        # print(Type)
-        # print(type(SetID))
-        # print(type(TTL))
-        # print(Record)
-        # print(Name)
+        
 
         if SetID=='2':
             app_color='blue'
@@ -216,4 +190,3 @@ def main():
             else:
                 pass
 
-main()
